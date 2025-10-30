@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muroro Livestock Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@nhost/nhost-js@2/dist/nhost.js"></script>
+    <style>
+        :root {
+            --royal-blue: #4169E1;
+            --gun-metal: #2C3539;
+            --crisp-white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --text-dark: #333333;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            padding-bottom: 80px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--royal-blue);
+            color: var(--crisp-white);
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .auth-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--crisp-white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .auth-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--crisp-white);
+        }
+
+        /* Main Content */
+        .dashboard {
+            padding: 20px 0;
+        }
+
+        .welcome-banner {
+            background-color: var(--gun-metal);
+            color: var(--crisp-white);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-text h2 {
+            margin-bottom: 5px;
+        }
+
+        .date-display {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* Livestock Cards */
+        .livestock-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .section-title h2 {
+            color: var(--gun-metal);
+            font-size: 1.3rem;
+        }
+
+        .add-btn {
+            background-color: var(--royal-blue);
+            color: var(--crisp-white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: #3151b3;
+        }
+
+        .add-btn:disabled {
+            background-color: var(--medium-gray);
+            cursor: not-allowed;
+        }
+
+        .livestock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .livestock-card {
+            background-color: var(--crisp-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .livestock-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--royal-blue);
+            color: var(--crisp-white);
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .livestock-icon {
+            font-size: 24px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .animal-photo {
+            width: 100%;
+            height: 180px;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .animal-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .animal-photo-placeholder {
+            color: var(--medium-gray);
+            font-size: 3rem;
+        }
+
+        .livestock-info {
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--gun-metal);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .photo-btn {
+            background-color: var(--royal-blue);
+            color: white;
+        }
+
+        .photo-btn:hover:not(:disabled) {
+            background-color: #3151b3;
+        }
+
+        .health-btn {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .health-btn:hover:not(:disabled) {
+            background-color: #e68900;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--crisp-white);
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .modal-header h3 {
+            color: var(--gun-metal);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gun-metal);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--gun-metal);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--medium-gray);
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--royal-blue);
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--medium-gray);
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background-color: var(--royal-blue);
+            color: var(--crisp-white);
+        }
+
+        .btn-secondary {
+            background-color: var(--medium-gray);
+            color: var(--text-dark);
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .spinner {
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--royal-blue);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--medium-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .notification.warning {
+            background-color: var(--warning);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--crisp-white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gun-metal);
+            font-size: 0.8rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-btn i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-btn.active {
+            color: var(--royal-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .auth-section {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .livestock-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-paw"></i>
+                    <h1>Muroro Livestock</h1>
+                </div>
+                <div class="auth-section" id="authSection">
+                    <!-- Auth buttons will be dynamically inserted here -->
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h2>Welcome to Muroro Livestock Management</h2>
+                    <p>Manage your livestock with individual animal tracking and photo storage</p>
+                </div>
+                <div class="date-display">
+                    <p id="current-date">Loading date...</p>
+                </div>
+            </div>
+
+            <section class="livestock-section">
+                <div class="section-title">
+                    <h2>Your Livestock</h2>
+                    <button class="add-btn" id="addAnimalBtn" disabled>
+                        <i class="fas fa-plus"></i> Add Animal
+                    </button>
+                </div>
+                <div class="livestock-grid" id="livestockGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-cow"></i>
+                        <h3>No Animals Added Yet</h3>
+                        <p>Sign in and add your first animal to get started</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="livestock-section">
+                <div class="section-title">
+                    <h2>Poultry</h2>
+                    <button class="add-btn" id="addPoultryBtn" disabled>
+                        <i class="fas fa-plus"></i> Add Poultry Group
+                    </button>
+                </div>
+                <div class="livestock-grid" id="poultryGrid">
+                    <div class="empty-state">
+                        <i class="fas fa-kiwi-bird"></i>
+                        <h3>No Poultry Added Yet</h3>
+                        <p>Sign in and add your poultry groups</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Notification Container -->
+        <div id="notificationContainer"></div>
+
+        <!-- Add Animal Modal -->
+        <div class="modal" id="animalModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="animalModalTitle">Add New Animal</h3>
+                    <button class="close-btn" id="closeAnimalModal">&times;</button>
+                </div>
+                <form id="animalForm">
+                    <input type="hidden" id="animalId">
+                    <div class="form-group">
+                        <label for="animalType">Animal Type</label>
+                        <select class="form-control" id="animalType" required>
+                            <option value="">Select Type</option>
+                            <option value="beef-cattle">Beef Cattle</option>
+                            <option value="steer">Steer</option>
+                            <option value="sheep">Sheep</option>
+                            <option value="goat">Goat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="animalName">Name/Identifier</label>
+                        <input type="text" class="form-control" id="animalName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="animalBreed">Breed</label>
+                        <input type="text" class="form-control" id="animalBreed">
+                    </div>
+                    <div class="form-group">
+                        <label for="animalBirthdate">Birth Date</label>
+                        <input type="date" class="form-control" id="animalBirthdate">
+                    </div>
+                    <div class="form-group">
+                        <label>Animal Photo</label>
+                        <div class="file-upload" id="animalPhotoUpload">
+                            <i class="fas fa-camera"></i>
+                            <p>Click to upload animal photo</p>
+                            <input type="file" class="file-input" id="animalPhoto" accept="image/*">
+                            <img id="animalPhotoPreview" class="image-preview">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="animalNotes">Notes</label>
+                        <textarea class="form-control" id="animalNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelAnimalBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveAnimalBtn">
+                            <span class="spinner" id="animalSpinner" style="display: none;"></span>
+                            Save Animal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Poultry Modal -->
+        <div class="modal" id="poultryModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Poultry Group</h3>
+                    <button class="close-btn" id="closePoultryModal">&times;</button>
+                </div>
+                <form id="poultryForm">
+                    <div class="form-group">
+                        <label for="poultryType">Poultry Type</label>
+                        <select class="form-control" id="poultryType" required>
+                            <option value="">Select Type</option>
+                            <option value="roadrunner-chicken">Roadrunner Chicken</option>
+                            <option value="layer-chicken">Layer Chicken</option>
+                            <option value="broiler">Broiler</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="poultryCount">Number of Birds</label>
+                        <input type="number" class="form-control" id="poultryCount" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="poultryNotes">Notes</label>
+                        <textarea class="form-control" id="poultryNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelPoultryBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="savePoultryBtn">
+                            <span class="spinner" id="poultrySpinner" style="display: none;"></span>
+                            Save Poultry Group
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-btn" data-section="animals">
+                <i class="fas fa-cow"></i>
+                <span>Animals</span>
+            </button>
+            <button class="nav-btn" data-section="feeds">
+                <i class="fas fa-utensils"></i>
+                <span>Feeds</span>
+            </button>
+            <button class="nav-btn" data-section="health">
+                <i class="fas fa-heartbeat"></i>
+                <span>Health</span>
+            </button>
+            <button class="nav-btn" data-section="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // Nhost Configuration
+        const nhost = new NhostClient({
+            subdomain: 'zatpzkilzjsqxpzdyppk',
+            region: 'eu-central-1'
+        });
+
+        // State Management
+        let currentUser = null;
+        let animals = [];
+        let poultry = [];
+
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const livestockGrid = document.getElementById('livestockGrid');
+        const poultryGrid = document.getElementById('poultryGrid');
+        const addAnimalBtn = document.getElementById('addAnimalBtn');
+        const addPoultryBtn = document.getElementById('addPoultryBtn');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Set today's date for birthdate fields
+            document.getElementById('animalBirthdate').valueAsDate = new Date();
+
+            // Initialize authentication
+            initializeAuth();
+
+            // Event Listeners
+            setupEventListeners();
+        });
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Authentication Functions
+        async function initializeAuth() {
+            try {
+                // Check if user is already signed in
+                const session = nhost.auth.getSession();
+                if (session) {
+                    currentUser = session.user;
+                    updateUIForAuthenticatedUser();
+                    await loadUserData();
+                } else {
+                    updateUIForUnauthenticatedUser();
+                }
+
+                // Listen for auth state changes
+                nhost.auth.onAuthStateChanged((event, session) => {
+                    if (event === 'SIGNED_IN') {
+                        currentUser = session.user;
+                        updateUIForAuthenticatedUser();
+                        loadUserData();
+                        showNotification('Successfully signed in!', 'success');
+                    } else if (event === 'SIGNED_OUT') {
+                        currentUser = null;
+                        animals = [];
+                        poultry = [];
+                        updateUIForUnauthenticatedUser();
+                        showNotification('Signed out successfully', 'success');
+                    }
+                });
+            } catch (error) {
+                console.error('Auth initialization error:', error);
+                showNotification('Authentication error', 'error');
+            }
+        }
+
+        function updateUIForAuthenticatedUser() {
+            authSection.innerHTML = `
+                <div class="user-info">
+                    <i class="fas fa-user"></i>
+                    <span>${currentUser.displayName || currentUser.email}</span>
+                </div>
+                <button class="auth-btn" id="signOutBtn">Sign Out</button>
+            `;
+            
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+            
+            // Enable action buttons
+            addAnimalBtn.disabled = false;
+            addPoultryBtn.disabled = false;
+        }
+
+        function updateUIForUnauthenticatedUser() {
+            authSection.innerHTML = `
+                <button class="auth-btn" id="signInBtn">Sign In</button>
+                <button class="auth-btn" id="signUpBtn">Sign Up</button>
+            `;
+            
+            document.getElementById('signInBtn').addEventListener('click', showSignIn);
+            document.getElementById('signUpBtn').addEventListener('click', showSignUp);
+            
+            // Disable action buttons
+            addAnimalBtn.disabled = true;
+            addPoultryBtn.disabled = true;
+            
+            // Show empty states
+            livestockGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-cow"></i>
+                    <h3>No Animals Added Yet</h3>
+                    <p>Sign in and add your first animal to get started</p>
+                </div>
+            `;
+            
+            poultryGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-kiwi-bird"></i>
+                    <h3>No Poultry Added Yet</h3>
+                    <p>Sign in and add your poultry groups</p>
+                </div>
+            `;
+        }
+
+        async function showSignIn() {
+            const email = prompt('Enter your email:');
+            const password = prompt('Enter your password:');
+            
+            if (email && password) {
+                try {
+                    const { error } = await nhost.auth.signIn({
+                        email,
+                        password
+                    });
+                    
+                    if (error) {
+                        showNotification('Sign in failed: ' + error.message, 'error');
+                    }
+                } catch (error) {
+                    showNotification('Sign in error: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async function showSignUp() {
+            const email = prompt('Enter your email:');
+            const password = prompt('Enter your password:');
+            
+            if (email && password) {
+                try {
+                    const { error } = await nhost.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            displayName: email.split('@')[0]
+                        }
+                    });
+                    
+                    if (error) {
+                        showNotification('Sign up failed: ' + error.message, 'error');
+                    } else {
+                        showNotification('Sign up successful! Please check your email for verification.', 'success');
+                    }
+                } catch (error) {
+                    showNotification('Sign up error: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async function signOut() {
+            try {
+                await nhost.auth.signOut();
+            } catch (error) {
+                showNotification('Sign out error: ' + error.message, 'error');
+            }
+        }
+
+        // Data Management Functions
+        async function loadUserData() {
+            if (!currentUser) return;
+            
+            try {
+                // Load animals using GraphQL
+                const { data: animalsData, error: animalsError } = await nhost.graphql.request(`
+                    query GetUserAnimals {
+                        animals(where: { user_id: { _eq: "${currentUser.id}" } }) {
+                            id
+                            type
+                            name
+                            breed
+                            birthdate
+                            photo_id
+                            health_status
+                            notes
+                            created_at
+                        }
+                    }
+                `);
+
+                if (animalsError) throw animalsError;
+                animals = animalsData.animals || [];
+
+                // Load poultry using GraphQL
+                const { data: poultryData, error: poultryError } = await nhost.graphql.request(`
+                    query GetUserPoultry {
+                        poultry(where: { user_id: { _eq: "${currentUser.id}" } }) {
+                            id
+                            type
+                            group_name
+                            bird_count
+                            notes
+                            created_at
+                        }
+                    }
+                `);
+
+                if (poultryError) throw poultryError;
+                poultry = poultryData.poultry || [];
+
+                renderAnimals();
+                renderPoultry();
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showNotification('Error loading data', 'error');
+            }
+        }
+
+        async function saveAnimal(animalData) {
+            if (!currentUser) return null;
+            
+            try {
+                let photoId = null;
+                
+                // Handle photo upload if exists
+                if (animalData.photoFile) {
+                    const { fileMetadata, error: uploadError } = await nhost.storage.upload({
+                        file: animalData.photoFile,
+                        bucketId: 'animal-photos'
+                    });
+                    
+                    if (uploadError) throw uploadError;
+                    photoId = fileMetadata.id;
+                }
+
+                const animalToSave = {
+                    user_id: currentUser.id,
+                    type: animalData.type,
+                    name: animalData.name,
+                    breed: animalData.breed || null,
+                    birthdate: animalData.birthdate || null,
+                    photo_id: photoId,
+                    notes: animalData.notes || null
+                };
+
+                let result;
+                if (animalData.id) {
+                    // Update existing animal
+                    const { data, error } = await nhost.graphql.request(`
+                        mutation UpdateAnimal($id: uuid!, $changes: animals_set_input!) {
+                            update_animals_by_pk(pk_columns: {id: $id}, _set: $changes) {
+                                id
+                                type
+                                name
+                                breed
+                                birthdate
+                                photo_id
+                                notes
+                            }
+                        }
+                    `, {
+                        id: animalData.id,
+                        changes: animalToSave
+                    });
+
+                    if (error) throw error;
+                    result = data.update_animals_by_pk;
+                } else {
+                    // Create new animal
+                    const { data, error } = await nhost.graphql.request(`
+                        mutation InsertAnimal($object: animals_insert_input!) {
+                            insert_animals_one(object: $object) {
+                                id
+                                type
+                                name
+                                breed
+                                birthdate
+                                photo_id
+                                notes
+                            }
+                        }
+                    `, {
+                        object: animalToSave
+                    });
+
+                    if (error) throw error;
+                    result = data.insert_animals_one;
+                }
+
+                return result;
+            } catch (error) {
+                console.error('Error saving animal:', error);
+                throw error;
+            }
+        }
+
+        async function savePoultry(poultryData) {
+            if (!currentUser) return null;
+            
+            try {
+                const poultryToSave = {
+                    user_id: currentUser.id,
+                    type: poultryData.type,
+                    group_name: poultryData.group_name || null,
+                    bird_count: poultryData.count,
+                    notes: poultryData.notes || null
+                };
+
+                let result;
+                if (poultryData.id) {
+                    // Update existing poultry
+                    const { data, error } = await nhost.graphql.request(`
+                        mutation UpdatePoultry($id: uuid!, $changes: poultry_set_input!) {
+                            update_poultry_by_pk(pk_columns: {id: $id}, _set: $changes) {
+                                id
+                                type
+                                group_name
+                                bird_count
+                                notes
+                            }
+                        }
+                    `, {
+                        id: poultryData.id,
+                        changes: poultryToSave
+                    });
+
+                    if (error) throw error;
+                    result = data.update_poultry_by_pk;
+                } else {
+                    // Create new poultry
+                    const { data, error } = await nhost.graphql.request(`
+                        mutation InsertPoultry($object: poultry_insert_input!) {
+                            insert_poultry_one(object: $object) {
+                                id
+                                type
+                                group_name
+                                bird_count
+                                notes
+                            }
+                        }
+                    `, {
+                        object: poultryToSave
+                    });
+
+                    if (error) throw error;
+                    result = data.insert_poultry_one;
+                }
+
+                return result;
+            } catch (error) {
+                console.error('Error saving poultry:', error);
+                throw error;
+            }
+        }
+
+        // Rendering Functions
+        function renderAnimals() {
+            if (animals.length === 0) {
+                livestockGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-cow"></i>
+                        <h3>No Animals Added Yet</h3>
+                        <p>Click "Add Animal" to add your first livestock animal</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            livestockGrid.innerHTML = '';
+            
+            animals.forEach(animal => {
+                const card = document.createElement('div');
+                card.className = 'livestock-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${getAnimalTypeDisplayName(animal.type)}</h3>
+                        <i class="fas ${getAnimalIcon(animal.type)} livestock-icon"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="animal-photo">
+                            ${animal.photo_id ? 
+                                `<img src="${nhost.storage.getPublicUrl({ fileId: animal.photo_id })}" alt="${animal.name}">` : 
+                                `<i class="fas ${getAnimalIcon(animal.type)} animal-photo-placeholder"></i>`
+                            }
+                        </div>
+                        <div class="livestock-info">
+                            <div class="info-item">
+                                <span class="info-label">Name:</span>
+                                <span>${animal.name}</span>
+                            </div>
+                            ${animal.breed ? `
+                                <div class="info-item">
+                                    <span class="info-label">Breed:</span>
+                                    <span>${animal.breed}</span>
+                                </div>
+                            ` : ''}
+                            ${animal.birthdate ? `
+                                <div class="info-item">
+                                    <span class="info-label">Age:</span>
+                                    <span>${calculateAge(animal.birthdate)}</span>
+                                </div>
+                            ` : ''}
+                            <div class="info-item">
+                                <span class="info-label">Health:</span>
+                                <span>${animal.health_status || 'Healthy'}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn photo-btn" data-animal-id="${animal.id}">
+                                <i class="fas fa-camera"></i> Photo
+                            </button>
+                            <button class="action-btn health-btn" data-animal-id="${animal.id}">
+                                <i class="fas fa-heartbeat"></i> Health
+                            </button>
+                        </div>
+                    </div>
+                `;
+                livestockGrid.appendChild(card);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.photo-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const animalId = this.dataset.animalId;
+                    alert(`Update photo for animal ${animalId}. This feature will be implemented in the next version.`);
+                });
+            });
+            
+            document.querySelectorAll('.health-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const animalId = this.dataset.animalId;
+                    alert(`Add health record for animal ${animalId}. This feature will be implemented in the next version.`);
+                });
+            });
+        }
+
+        function renderPoultry() {
+            if (poultry.length === 0) {
+                poultryGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-kiwi-bird"></i>
+                        <h3>No Poultry Added Yet</h3>
+                        <p>Click "Add Poultry Group" to add your first poultry group</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            poultryGrid.innerHTML = '';
+            
+            poultry.forEach(group => {
+                const card = document.createElement('div');
+                card.className = 'livestock-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${getPoultryTypeDisplayName(group.type)}</h3>
+                        <i class="fas fa-kiwi-bird livestock-icon"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="animal-photo">
+                            <i class="fas fa-kiwi-bird animal-photo-placeholder"></i>
+                        </div>
+                        <div class="livestock-info">
+                            <div class="info-item">
+                                <span class="info-label">Count:</span>
+                                <span>${group.bird_count}</span>
+                            </div>
+                            ${group.group_name ? `
+                                <div class="info-item">
+                                    <span class="info-label">Group:</span>
+                                    <span>${group.group_name}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn health-btn" data-poultry-id="${group.id}">
+                                <i class="fas fa-heartbeat"></i> Health
+                            </button>
+                            <button class="action-btn" data-poultry-id="${group.id}" style="background-color: var(--success); color: white;">
+                                <i class="fas fa-egg"></i> Eggs
+                            </button>
+                        </div>
+                    </div>
+                `;
+                poultryGrid.appendChild(card);
+            });
+        }
+
+        // Helper Functions
+        function getAnimalTypeDisplayName(type) {
+            const names = {
+                'beef-cattle': 'Beef Cattle',
+                'steer': 'Steer',
+                'sheep': 'Sheep',
+                'goat': 'Goat'
+            };
+            return names[type] || type;
+        }
+
+        function getPoultryTypeDisplayName(type) {
+            const names = {
+                'roadrunner-chicken': 'Roadrunner Chickens',
+                'layer-chicken': 'Layer Chickens',
+                'broiler': 'Broilers'
+            };
+            return names[type] || type;
+        }
+
+        function getAnimalIcon(type) {
+            const icons = {
+                'beef-cattle': 'fa-cow',
+                'steer': 'fa-cow',
+                'sheep': 'fa-cloud',
+                'goat': 'fa-horse'
+            };
+            return icons[type] || 'fa-paw';
+        }
+
+        function calculateAge(birthdate) {
+            const birth = new Date(birthdate);
+            const now = new Date();
+            const diff = now - birth;
+            const years = Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
+            const months = Math.floor((diff % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+            
+            if (years > 0) {
+                return `${years} year${years > 1 ? 's' : ''}${months > 0 ? `, ${months} month${months > 1 ? 's' : ''}` : ''}`;
+            } else {
+                return `${months} month${months > 1 ? 's' : ''}`;
+            }
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Add Animal Modal
+            document.getElementById('addAnimalBtn').addEventListener('click', () => openAnimalModal());
+            document.getElementById('closeAnimalModal').addEventListener('click', () => closeModal(document.getElementById('animalModal')));
+            document.getElementById('cancelAnimalBtn').addEventListener('click', () => closeModal(document.getElementById('animalModal')));
+            document.getElementById('animalForm').addEventListener('submit', handleAnimalSubmit);
+            
+            // Add Poultry Modal
+            document.getElementById('addPoultryBtn').addEventListener('click', () => openPoultryModal());
+            document.getElementById('closePoultryModal').addEventListener('click', () => closeModal(document.getElementById('poultryModal')));
+            document.getElementById('cancelPoultryBtn').addEventListener('click', () => closeModal(document.getElementById('poultryModal')));
+            document.getElementById('poultryForm').addEventListener('submit', handlePoultrySubmit);
+            
+            // File Upload
+            document.getElementById('animalPhotoUpload').addEventListener('click', () => document.getElementById('animalPhoto').click());
+            document.getElementById('animalPhoto').addEventListener('change', handleAnimalPhotoSelect);
+            
+            // Bottom Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    showNotification(`Navigating to ${this.dataset.section} section`, 'success');
+                });
+            });
+        }
+
+        // Modal Functions
+        function openAnimalModal(animalId = null) {
+            document.getElementById('animalModalTitle').textContent = animalId ? 'Edit Animal' : 'Add New Animal';
+            document.getElementById('animalId').value = animalId || '';
+            
+            if (animalId) {
+                const animal = animals.find(a => a.id === animalId);
+                if (animal) {
+                    document.getElementById('animalType').value = animal.type;
+                    document.getElementById('animalName').value = animal.name;
+                    document.getElementById('animalBreed').value = animal.breed || '';
+                    document.getElementById('animalBirthdate').value = animal.birthdate || '';
+                    document.getElementById('animalNotes').value = animal.notes || '';
+                    
+                    if (animal.photo_id) {
+                        document.getElementById('animalPhotoPreview').src = nhost.storage.getPublicUrl({ fileId: animal.photo_id });
+                        document.getElementById('animalPhotoPreview').style.display = 'block';
+                    }
+                }
+            } else {
+                document.getElementById('animalForm').reset();
+                document.getElementById('animalPhotoPreview').style.display = 'none';
+            }
+            
+            document.getElementById('animalModal').style.display = 'flex';
+        }
+
+        function openPoultryModal(poultryId = null) {
+            document.getElementById('poultryModal').style.display = 'flex';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Form Handlers
+        async function handleAnimalSubmit(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Please sign in to add animals', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveAnimalBtn');
+            const spinner = document.getElementById('animalSpinner');
+            
+            saveBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            try {
+                const photoFile = document.getElementById('animalPhoto').files[0];
+                
+                const animalData = {
+                    id: document.getElementById('animalId').value || null,
+                    type: document.getElementById('animalType').value,
+                    name: document.getElementById('animalName').value,
+                    breed: document.getElementById('animalBreed').value,
+                    birthdate: document.getElementById('animalBirthdate').value,
+                    notes: document.getElementById('animalNotes').value,
+                    photoFile: photoFile
+                };
+                
+                await saveAnimal(animalData);
+                await loadUserData(); // Reload data from server
+                closeModal(document.getElementById('animalModal'));
+                showNotification('Animal saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving animal:', error);
+                showNotification('Error saving animal: ' + error.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function handlePoultrySubmit(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Please sign in to add poultry', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('savePoultryBtn');
+            const spinner = document.getElementById('poultrySpinner');
+            
+            saveBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            try {
+                const poultryData = {
+                    id: document.getElementById('poultryId')?.value || null,
+                    type: document.getElementById('poultryType').value,
+                    group_name: document.getElementById('poultryName')?.value || '',
+                    count: parseInt(document.getElementById('poultryCount').value),
+                    notes: document.getElementById('poultryNotes').value
+                };
+                
+                await savePoultry(poultryData);
+                await loadUserData(); // Reload data from server
+                closeModal(document.getElementById('poultryModal'));
+                showNotification('Poultry group saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving poultry:', error);
+                showNotification('Error saving poultry: ' + error.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        function handleAnimalPhotoSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const preview = document.getElementById('animalPhotoPreview');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
